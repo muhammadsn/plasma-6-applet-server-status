@@ -2,14 +2,17 @@
  *   Copyright (C) 2017 by MakG <makg@makg.eu>                             *
  ***************************************************************************/
 
-import QtQuick 2.1
-import QtQuick.Layouts 1.1
-import QtQuick.Controls 1.4
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.plasmoid 2.0
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import QtQuick 2.15
+import QtQuick.Layouts
+import QtQuick.Controls 
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.plasmoid
+import org.kde.plasma.components as PlasmaComponents
+import org.kde.plasma.plasma5support as Plasma5Support
+import org.kde.kirigami as Kirigami
 
-Item {
+
+PlasmoidItem {
 	id: root
 	
 	property int lastRefreshAt: 0
@@ -21,7 +24,7 @@ Item {
 	height: 300
 	
 // 	Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
-	Plasmoid.toolTipTextFormat: Text.RichText
+	toolTipTextFormat: Text.RichText
 	
 	ServersModel {
 		id: serversModel
@@ -30,19 +33,19 @@ Item {
 	Component.onCompleted: {
 		reloadServerModel();
 		
-		plasmoid.setAction("refreshAll", i18n("Refresh all"), "view-refresh")
+		plasmoid.addAction("refreshAll", i18n("Refresh all"), "view-refresh")
 	}
 	
 	Connections {
 		target: plasmoid.configuration
 		
-		onServersChanged: {
+		function onServersChanged() {
 			reloadServerModel();
 		}
 	}
 	
-	Plasmoid.compactRepresentation: Item {
-		PlasmaCore.IconItem {
+	compactRepresentation: Item {
+		Kirigami.Icon {
 			anchors.fill: parent
 			source: statusSummary == 1 ? plasmoid.configuration.iconOnline : plasmoid.configuration.iconOffline
 		}
@@ -58,7 +61,7 @@ Item {
 		}
 	}
 	
-	Plasmoid.fullRepresentation: Item {
+	fullRepresentation: Item {
 		Layout.preferredWidth: 300
 		Layout.preferredHeight: 300
 		
@@ -69,7 +72,7 @@ Item {
 			delegate: Row {
 				height: nameText.paintedHeight * 1.5
 				
-				PlasmaCore.IconItem {
+				Kirigami.Icon {
 					id: icon
 					
 					width: parent.height
@@ -112,9 +115,9 @@ Item {
 					id: mouseArea
 					
 					anchors.top: icon.top
-					anchors.right: nameText.right
-					anchors.bottom: icon.bottom
-					anchors.left: icon.left
+						anchors.bottom: icon.bottom
+						anchors.left: icon.left
+						anchors.right: nameText.right
 					hoverEnabled: true
 					onClicked: {
 						refreshServer(model.index)
@@ -148,7 +151,7 @@ Item {
 		}
 	}
 	
-	PlasmaCore.DataSource {
+	Plasma5Support.DataSource {
 		id: executableDS
 		engine: "executable"
 		connectedSources: []
@@ -169,7 +172,7 @@ Item {
 		signal exited(string sourceName, string stdout)
 	}
 	
-	PlasmaCore.DataSource {
+	Plasma5Support.DataSource {
 		id: notifyExecDS
 		engine: "executable"
 		connectedSources: []

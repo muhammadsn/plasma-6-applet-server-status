@@ -1,0 +1,25 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "mmakg@makg.eu",
+                "Name": "Maciej Gierej",
+                "WebSite": "http://maciej.gierej.pl"
+            },
+            {
+                "Email": "mo.Soleymannejad@gmail.com",
+                "Name": "Mohamamd Soleymannejad",
+                "WebSite": "https://soleymannejad.com"
+            }
+        ],
+        "Category": "Utilities",
+        "Description": "Shows status of user defined servers",
+        "Icon": "view-web-browser-dom-tree",
+        "Id": "org.kde.plasma.serverstatus",
+        "Name": "Server Status",
+        "Version": "1.0",
+        "Website": "https://github.com/muhammadsn/plasma-6-applet-server-status"
+    },
+    "KPackageStructure": "Plasma/Applet",
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

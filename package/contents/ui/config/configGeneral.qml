@@ -1,12 +1,20 @@
-import QtQuick 2.1
-import QtQuick.Controls 1.2
-import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.1
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import QtQuick
+import QtQuick.Controls 2.3 as QQC2
+import QtQuick.Dialogs 
+import QtQuick.Layouts 
+import org.kde.plasma.plasmoid
+import org.kde.plasma.core as PlasmaCore
+import org.kde.plasma.components as PlasmaComponents
+import org.kde.kquickcontrolsaddons as KQuickAddons
+import org.kde.plasma.plasma5support as Plasma5Support
+import org.kde.kcmutils as KCM
+import org.kde.kirigami as Kirigami
+import org.kde.kirigamiaddons.tableview as Tables
+import org.kde.ksvg as KSvg
 
 import ".."
 
-Item {
+KCM.SimpleKCM {
 	id: configGeneral
 	Layout.fillWidth: true
 	
@@ -17,7 +25,7 @@ Item {
 	ServersModel {
 		id: serversModel
 	}
-	
+
 	Component.onCompleted: {
 		serversModel.clear();
 		
@@ -33,7 +41,7 @@ Item {
 		
 		Layout.alignment: Qt.AlignTop | Qt.AlignRight
 		
-		TableView {
+		QQC2.TableView {
 			id: serversTable
 			model: serversModel
 			
@@ -43,31 +51,35 @@ Item {
 			anchors.left: parent.left
 			anchors.rightMargin: 10
 			
-			TableViewColumn {
-				role: "active"
-				width: 20
-				delegate: CheckBox {
-					checked: model.active
-					onClicked: {
-						model.active = checked;
-						
-						cfg_servers = JSON.stringify(getServersArray());
-					}
-				}
-			}
+			 // Remove or fix the commented-out HeaderComponent if necessary
+			// Tables.HeaderComponent {
+			// 	role: "active"
+			// 	width: 20 // Ensure this is an integer
+			// 	contentItem: QQC2.CheckBox {
+			// 		checked: model.active
+			// 		onClicked: {
+			// 			model.active = checked;
+			// 			cfg_servers = JSON.stringify(getServersArray());
+			// 		}
+			// 	}
+			// }
 			
-			TableViewColumn {
+			QQC2.TableViewColumn {
+				id: "nameCol"
 				role: "name"
 				title: "Name"
+				width: 100 // Assign a valid integer value for width
 			}
 			
-			onDoubleClicked: {
-				editServer();
-			}
-			
-			onActivated: {
-				moveUp.enabled = row > 0;
-				moveDown.enabled = row < serversTable.model.count - 1;
+			Connections {
+				target: serversTable
+				onCurrentRowChanged: {
+					moveUp.enabled = serversTable.currentRow > 0;
+					moveDown.enabled = serversTable.currentRow < serversTable.model.count - 1;
+				}
+				onDoubleClicked: {
+					editServer();
+				}
 			}
 		}
 		
@@ -139,7 +151,6 @@ Item {
 		}
 	}
 	
-	
 	Dialog {
 		id: serverDialog
 		visible: false
@@ -175,7 +186,7 @@ Item {
 					text: "Name:"
 				}
 				
-				TextField {
+				QQC2.TextField {
 					id: serverName
 					Layout.minimumWidth: theme.mSize(theme.defaultFont).width * 40
 				}
@@ -185,7 +196,7 @@ Item {
 					text: "Host name:"
 				}
 				
-				TextField {
+				QQC2.TextField {
 					id: serverHostname
 					Layout.minimumWidth: theme.mSize(theme.defaultFont).width * 40
 				}
@@ -195,11 +206,11 @@ Item {
 					text: i18n("Refresh rate:")
 				}
 				
-				SpinBox {
+				QQC2.SpinBox {
 					id: serverRefreshRate
 					suffix: i18n(" seconds")
-					minimumValue: 1
-					maximumValue: 3600
+					from: 1
+					to: 3600
 				}
 				
 				
@@ -207,7 +218,7 @@ Item {
 					text: i18n("Check method:")
 				}
 				
-				ComboBox {
+				QQC2.ComboBox {
 					id: serverMethod
 					model: ["Ping", "PingV6", "HTTP 200 OK", "Command"]
 					Layout.minimumWidth: theme.mSize(theme.defaultFont).width * 15
@@ -224,13 +235,13 @@ Item {
 					text: ""
 				}
 				
-				CheckBox {
+				QQC2.CheckBox {
 					id: serverActive
 					text: i18n("Active")
 				}
 			}
 			
-			GroupBox {
+			QQC2.GroupBox {
 				id: commandGroup
 				title: "Command"
 				visible: false
@@ -238,7 +249,7 @@ Item {
 				anchors.left: parent.left
 				anchors.right: parent.right
 					
-				TextField {
+				QQC2.TextField {
 					id: serverCommand
 					width: parent.width
 				}
@@ -288,4 +299,5 @@ Item {
 		
 		return serversArray;
 	}
+
 }

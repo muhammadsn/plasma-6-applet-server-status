@@ -1,10 +1,12 @@
-import QtQuick 2.1
-import QtQuick.Controls 1.2
-import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.1
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import QtQuick
+import QtQuick.Controls 
+import QtQuick.Dialogs 
+import QtQuick.Layouts 
+import org.kde.plasma.components as PlasmaComponents
+import org.kde.kirigami as Kirigami
+import org.kde.kcmutils as KCM
 
-Item {
+KCM.SimpleKCM {
 	id: configNotifications
 	Layout.fillWidth: true
 	
